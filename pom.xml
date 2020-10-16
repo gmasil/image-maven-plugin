@@ -52,6 +52,7 @@
 		<maven-api.version>3.6.3</maven-api.version>
 		<maven-annotations.version>3.6.0</maven-annotations.version>
 		<surefire.version>2.22.2</surefire.version>
+		<jacoco.version>0.8.3</jacoco.version>
 		<junit-jupiter.version>5.5.2</junit-jupiter.version>
 		<junit-platform.version>1.5.2</junit-platform.version>
 		<hamcrest.version>2.2</hamcrest.version>
@@ -119,9 +120,27 @@
 
 	<build>
 		<plugins>
+			<!-- surefire -->
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${surefire.version}</version>
+			</plugin>
+			<!-- jacoco -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco.version}</version>
+				<executions>
+					<execution>
+						<id>pre-unit-test</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+						<configuration>
+							<destFile>${project.build.directory}/jacoco.exec</destFile>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<!-- license -->
 			<plugin>
