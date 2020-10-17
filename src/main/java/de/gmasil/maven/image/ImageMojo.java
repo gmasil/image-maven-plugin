@@ -72,18 +72,13 @@ public class ImageMojo extends AbstractMojo {
 		Graphics graphics = image.getGraphics();
 		graphics.drawImage(imgBackground, 0, 0, null);
 		// draw title
-		graphics.setColor(Color.WHITE);
+		graphics.setColor(toColor(title.getColor()));
 		graphics.setFont(new Font(title.getFont(), Font.PLAIN, title.getSize()));
 		graphics.drawString(title.getText(), title.getX(), title.getY());
 		if (subtitle != null) {
 			// draw subtitle
 			List<String> subtitles;
-			if (subtitle.getText().contains("\\n")) {
-				subtitles = Arrays.asList(subtitle.getText().split("\\\\n"));
-			} else {
-				subtitles = new LinkedList<>();
-				subtitles.add(subtitle.getText());
-			}
+			subtitles = extractSubtitleLines();
 			int offset = 0;
 			for (String s : subtitles) {
 				graphics.setFont(new Font(subtitle.getFont(), Font.PLAIN, subtitle.getSize()));
@@ -109,6 +104,22 @@ public class ImageMojo extends AbstractMojo {
 				throw new MojoExecutionException("Error while saving image", e);
 			}
 		}
+	}
+
+	protected List<String> extractSubtitleLines() {
+		List<String> subtitles;
+		if (subtitle.getText().contains("\\n")) {
+			subtitles = Arrays.asList(subtitle.getText().split("\\\\n"));
+		} else {
+			subtitles = new LinkedList<>();
+			subtitles.add(subtitle.getText());
+		}
+		return subtitles;
+	}
+
+	protected Color toColor(String colorStr) {
+		return new Color(Integer.valueOf(colorStr.substring(1, 3), 16), Integer.valueOf(colorStr.substring(3, 5), 16),
+				Integer.valueOf(colorStr.substring(5, 7), 16));
 	}
 
 	protected String getExtension(String filename) {

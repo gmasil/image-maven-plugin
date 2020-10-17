@@ -19,12 +19,16 @@
  */
 package de.gmasil.maven.image;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.io.FileMatchers.aFileWithSize;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.junit.jupiter.api.Test;
@@ -34,8 +38,16 @@ class ImageMojoTest {
 	void test() {
 		ImageMojo mojo = new ImageMojo();
 		mojo.background = "src/test/resources/background.png";
-		mojo.title = new Title("My Title", 20, 50, 25, "Ebrima");
-		mojo.subtitle = new Title("My Subtitle\\nLine 2", 20, 70, 15, "Arial");
+		mojo.title = new Title("My Title");
+		mojo.title.setX(20);
+		mojo.title.setY(50);
+		mojo.title.setSize(25);
+		mojo.title.setFont("Ebrima");
+		mojo.subtitle = new Title("My Subtitle\\nLine 2");
+		mojo.subtitle.setX(20);
+		mojo.subtitle.setY(70);
+		mojo.subtitle.setSize(15);
+		mojo.subtitle.setFont("Arial");
 		mojo.target = "target/targetimage.bmp";
 		mojo.overwrite = true;
 		try {
@@ -45,5 +57,30 @@ class ImageMojoTest {
 		}
 		assertThat("The target file does not exist", new File(mojo.target).exists());
 		assertThat(new File(mojo.target), aFileWithSize(greaterThan(1L)));
+	}
+
+	@Test
+	void testExtractSubtitleLinesSingle() {
+		ImageMojo mojo = new ImageMojo();
+		// escaped \n as it would be read from xml config
+		mojo.subtitle = new Title("Only one Line");
+		List<String> lines = mojo.extractSubtitleLines();
+		assertThat(lines, hasSize(1));
+	}
+
+	@Test
+	void testExtractSubtitleLinesMultiple() {
+		ImageMojo mojo = new ImageMojo();
+		// escaped \n as it would be read from xml config
+		mojo.subtitle = new Title("Line1\\nLine2");
+		List<String> lines = mojo.extractSubtitleLines();
+		assertThat(lines, hasSize(2));
+	}
+
+	@Test
+	void testGetExtensionReturnsPngOnFailure() {
+		ImageMojo mojo = new ImageMojo();
+		String extension = mojo.getExtension("testfile");
+		assertThat(extension, is(equalTo("png")));
 	}
 }

@@ -37,15 +37,14 @@ public class Title {
 	@Parameter(property = "font", required = false, defaultValue = "Arial")
 	private String font = "Arial";
 
+	@Parameter(property = "color", required = false, defaultValue = "#ffffff")
+	private String color = "#ffffff";
+
 	public Title() {
 	}
 
-	public Title(String text, int x, int y, int size, String font) {
+	public Title(String text) {
 		this.text = text;
-		this.x = x;
-		this.y = y;
-		this.size = size;
-		this.font = font;
 	}
 
 	public String getText() {
@@ -86,5 +85,13 @@ public class Title {
 
 	public void setFont(String font) {
 		this.font = font;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
 	}
 }
