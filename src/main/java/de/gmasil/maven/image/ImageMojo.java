@@ -79,6 +79,7 @@ public class ImageMojo extends AbstractMojo {
 			// draw subtitle
 			List<String> subtitles;
 			subtitles = extractSubtitleLines();
+			graphics.setColor(toColor(subtitle.getColor()));
 			int offset = 0;
 			for (String s : subtitles) {
 				graphics.setFont(new Font(subtitle.getFont(), Font.PLAIN, subtitle.getSize()));
