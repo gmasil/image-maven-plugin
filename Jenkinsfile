@@ -37,6 +37,10 @@ pipeline {
   post {
     always {
       junit '**/surefire-reports/**/*.xml'
+      cleanWs()
+      dir("${env.WORKSPACE}@tmp") {
+        deleteDir()
+      }
     }
   }
 }
